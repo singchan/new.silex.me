@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- generator meta tag -->
+    <!-- leave this for stats and Silex version check -->
+    <meta name="generator" content="Silex v2.2.6">
+    <!-- End of generator meta tag -->
+    <link data-silex-static="" href="//localhost:6805/static/2.6/normalize.css" rel="stylesheet">
+    <link data-silex-static="" href="//localhost:6805/static/2.6/front-end.css" rel="stylesheet">
+    <script data-silex-static="" type="text/javascript" src="//localhost:6805/static/2.6/jquery.js"></script>
+    <script data-silex-static="" type="text/javascript" src="//localhost:6805/static/2.6/jquery-ui.js"></script>
+    <script data-silex-static="" type="text/javascript" src="//localhost:6805/static/2.6/pageable.js"></script>
+    <script data-silex-static="" type="text/javascript" src="//localhost:6805/static/2.6/front-end.js"></script>
+
+    <style type="text/css" class="silex-style">
+        body.enable-mobile {
+            padding: 0;
+            line-height: 1.5;
+        }
+        
+                div.right {
+                    right: 0;
+                    left: auto;
+                    z-index: 10;
+                }
+                
+                div.multi-col .silex-element-content {
+                    -webkit-column-count: 2;
+                    -moz-column-count: 2;
+                    column-count: 2;
+                }
+    .feature h2 {
+        font-weight: lighter;
+    }
+    .nav {
+        text-transform: uppercase;
+        line-height: 1.5;
+    }
+    .hero h2 * {
+        line-height: 1.5;
+    }
+    .hero h1 * {
+        text-transform: uppercase;
+    }
+    .list {
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
+        column-count: 2;
+    }
+    .list.cols4 {
+        -webkit-column-count: 4;
+        -moz-column-count: 4;
+        column-count: 4;
+    }
+    .list .editable-style {
+        position: relative;
+        display: inline-block;
+        top: auto;
+        left: auto;
+        max-width: 95%;
+        margin: 10px 100px;
+    }
+    .unslider-arrow {
+        display: block;
+        width: 32px;
+        height: 32px;
+        top: 50%;
+        right: -40px !important;
+        left: auto;
+        margin-top: -16px;
+        overflow: hidden;
+        background: rgba(0,0,0,.2) no-repeat 50% 50%;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAQCAQAAABuQZ3IAAAAi0lEQVR4AU3OISBEQQBAwS0AACS9NxqQgCZpkiYBVddFvWhAAUABAPQCAGC4g/0vTnrBqCfDIZl70J+kMUBPpEwT4FNXxBxz4F1HxHyr4EVTxBLb4EFNxEon4CJSlVNw9AcV9sC16h8osgke1P1ArgXwouVvdQq86ww/GQefusNf7kBviBlxpT8k+gL/Wox4r1d4MwAAAABJRU5ErkJggg==');
+        background-size: 7px 11px;
+        border-radius: 32px;
+        text-indent: -999em;
+        opacity: .6;
+        transition: opacity .2s;
+    }
+    .unslider-arrow.prev {
+        left: -50px;
+        right: auto;
+        -ms-transform: rotate(-180deg);
+        transform: rotate(-180deg);
+    }
+    ul.unslider-wrap img {
+        display: block;
+        margin: auto;
+        min-width: 530px;
+    }
+    ul.unslider-wrap li a {
+        text-decoration: none;
+    }
+    ul.unslider-wrap li p {
+        color: black;
+        text-align: center;
+    }
+    </style>
+    <script type="text/javascript" class="silex-script">
+        ////////////////////////////////////
+        // github issues
+        ////////////////////////////////////
+        function silex_github_widget(containerSelector, labels, imageMode, cbk){
+            var labelsStr = '';
+            // for(var idx=0; idx<labels.length; idx++) labelsStr += '%20label%3A' + labels[idx];
+            // build url like https://api.github.com/repos/silexlabs/Silex/issues?labels=widget
+            //var githubUrl = 'https://api.github.com/repos/silexlabs/Silex/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen' + labelsStr + '&callback=?';
+            var githubUrl = 'https://api.github.com/repos/silexlabs/Silex/issues?state=open&per_page=50&callback=?';
+            $.getJSON(githubUrl, function (data) {
+              data = data.data;
+              var listHtml = '<ul>';
+              for (issueIndex in data){
+                var issue = data[issueIndex];
+                if(typeof(issue) != 'object') continue; // case of IE? And when an error occured (e.g. API rate limit exceeded)
+                var hasTag = false;
+                for(var idx1=0; idx1<issue.labels.length; idx1++)
+                    for(var idx2=0; idx2<labels.length; idx2++) 
+                        if(issue.labels[idx1].name === labels[idx2]) {
+                            hasTag = true;
+                            break;
+                        }
+                if(hasTag) {
+                    var issueHtml = "<li>";
+                    issueHtml += '<a target="_blank" href' + '="';
+                    issueHtml += issue.html_url;
+                    issueHtml += '">';
+                    if (imageMode){
+                      var re = /(https?:\/\/\S+\.(?:jpg|png|gif|jpg<.|png<.|gif<.))/i;
+                      var imageUrlArray = issue.body.match(re);
+                      if (imageUrlArray && imageUrlArray.length > 0){
+                        var firstImageUrl = imageUrlArray[0];
+                        issueHtml += '<img ' + 'src' + '="' + firstImageUrl + '" alt="' + issue.title + '" title="' + issue.title + '" />';
+                        issueHtml += '<p>' + issue.title + '</p>';
+                      }
+                    }
+                    else{
+                      issueHtml += issue.title;
+                    }
+                    issueHtml += "</a>";
+                    issueHtml += "</li>";
+                    listHtml += issueHtml;
+                }
+              }
+              listHtml += '</ul>';
+              $(containerSelector+' p.loading').remove();
+              $(containerSelector).append(listHtml);
+              if(cbk) cbk();
+            });
+        }
+    </script>
+    <style class="silex-inline-styles" type="text/css">
+        .body-initial {
+            background-color: rgba(192,210,231,1); 
+        }
+        .silex-id-1474394621033-3 {
+            min-height: 63px; 
+            width: 20px; 
+            top: 5px; 
+            left: 0px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474394621033-3 {
+            top: 0px; 
+            left: 0px; 
+            width: 469px; 
+            min-height: 258px; 
+        }
+        }.silex-id-1474394621032-2 {
+            min-height: 63px; 
+            background-color: rgba(0,74,122,1); 
+            top: 0px; 
+            left: 209px; 
+            width: 1200px; 
+        }
+        .silex-id-1474579300132-38 {
+            min-height: 41px; 
+            width: 135px; 
+            top: 12px; 
+            left: 50px; 
+            background-color: transparent; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474579300132-38 {
+            top: 14px; 
+            left: 154px; 
+            width: 138px; 
+            min-height: 102px; 
+        }
+        }.silex-id-1474408836543-1 {
+            min-height: 35px; 
+            width: 26px; 
+            top: 0px; 
+            left: 0px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474408836543-1 {
+            top: -2px; 
+            left: 2px; 
+            width: 58px; 
+            min-height: 68px; 
+        }
+        }.silex-id-1474409165718-4 {
+            min-height: 48px; 
+            width: 60px; 
+            top: 5px; 
+            left: 29px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474409165718-4 {
+            top: 34px; 
+            left: 66px; 
+            width: 70px; 
+            min-height: 34px; 
+        }
+        }.silex-id-1474578602644-37 {
+            min-height: 24px; 
+            width: 471px; 
+            top: 20px; 
+            left: 677px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474578602644-37 {
+            top: 107px; 
+            left: 39px; 
+            width: 368px; 
+            min-height: 63px; 
+        }
+        }.silex-id-1474475753554-24 {
+            min-height: 149px; 
+            width: 149px; 
+            top: 0px; 
+            left: 1473px; 
+        }
+        .silex-id-1474409102114-3 {
+            min-height: 694px; 
+            width: 1430px; 
+            top: 63px; 
+            left: 0px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474409102114-3 {
+            top: 258px; 
+            left: 0px; 
+            width: 469px; 
+            min-height: 519px; 
+        }
+        }.silex-id-1474409102114-2 {
+            min-height: 788px; 
+            background-color: rgba(0,74,122,1); 
+            top: 0px; 
+            left: 115px; 
+            width: 1200px; 
+            background-position: center center; 
+            background-repeat: no-repeat; 
+            background-size: cover; 
+        }
+        .silex-id-1474628183145-42 {
+            min-height: 788px; 
+            width: 1200px; 
+            top: 0px; 
+            left: 0px; 
+            background-color: rgba(0,74,122,1); 
+            background-image: url('assets/bg1-small2.jpg'); 
+            background-size: cover; 
+            opacity: 0.1; 
+        }
+        .silex-id-1474472686825-5 {
+            min-height: 102px; 
+            width: 79px; 
+            top: 73px; 
+            left: 562px; 
+        }
+        .silex-id-1474472716691-6 {
+            min-height: 150px; 
+            width: 945px; 
+            top: 194px; 
+            left: 117px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474472716691-6 {
+            top: 85px; 
+            left: 72px; 
+            width: 302px; 
+            min-height: 349px; 
+        }
+        }.silex-id-1474475972664-25 {
+            min-height: 85px; 
+            width: 212px; 
+            top: 432px; 
+            left: 494px; 
+        }
+        .silex-id-1474472923532-8 {
+            min-height: 344px; 
+            width: 1430px; 
+            top: 851px; 
+            left: 0px; 
+        }
+        .silex-id-1474472923531-7 {
+            min-height: 407px; 
+            background-color: rgba(206,216,228,1); 
+            width: 1200px; 
+            top: 0px; 
+            left: 115px; 
+        }
+        .silex-id-1474473479197-9 {
+            min-height: 369px; 
+            width: 816px; 
+            top: -84px; 
+            left: 190px; 
+            background-color: transparent; 
+        }
+        .silex-id-1474475532881-16 {
+            min-height: 540px; 
+            width: 20px; 
+            top: 1096px; 
+            left: 0px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474475532881-16 {
+            top: 685px; 
+            left: 0px; 
+            width: 469px; 
+            min-height: 720px; 
+            background-color: rgba(206,216,228,1); 
+        }
+        }.silex-id-1474475532882-17 {
+            min-height: 218px; 
+            background-color: rgba(206,216,228,1); 
+            width: 1200px; 
+            top: 0px; 
+            left: 212px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474475532882-17 {
+            top: 0px; 
+            left: 12px; 
+            width: 446px; 
+            min-height: 720px; 
+        }
+        }.silex-id-1474473839999-10 {
+            min-height: 117px; 
+            width: 364px; 
+            top: 55px; 
+            left: 190px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474473839999-10 {
+            top: 23px; 
+            left: 11px; 
+            width: 423px; 
+            min-height: 117px; 
+        }
+        }.silex-id-1474474097724-0 {
+            min-height: 151px; 
+            width: 364px; 
+            top: 55px; 
+            left: 634px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474474097724-0 {
+            top: 186px; 
+            left: 11px; 
+            width: 423px; 
+            min-height: 168px; 
+        }
+        }.silex-id-1474474384996-1 {
+            min-height: 134px; 
+            width: 364px; 
+            top: 299px; 
+            left: 190px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474474384996-1 {
+            top: 400px; 
+            left: 11px; 
+            width: 423px; 
+            min-height: 134px; 
+        }
+        }.silex-id-1474474385000-2 {
+            min-height: 116px; 
+            width: 364px; 
+            top: 299px; 
+            left: 634px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474474385000-2 {
+            top: 580px; 
+            left: 11px; 
+            width: 424px; 
+            min-height: 117px; 
+        }
+        }.silex-id-1474474787860-4 {
+            min-height: 420px; 
+            width: 1430px; 
+            top: 1641px; 
+            left: 0px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474474787860-4 {
+            top: 1349px; 
+            left: 0px; 
+            width: 469px; 
+            min-height: 374px; 
+        }
+        }.silex-id-1474474787859-3 {
+            min-height: 368px; 
+            background-color: rgba(255,255,255,1); 
+            width: 1200px; 
+            top: 0px; 
+            left: 115px; 
+        }
+        .silex-id-1474475027688-12 {
+            min-height: 66px; 
+            width: 557px; 
+            top: 19px; 
+            left: 326px; 
+        }
+        .silex-id-1474580644053-39 {
+            min-height: 263px; 
+            width: 803px; 
+            top: 85px; 
+            left: 205px; 
+            background-color: rgb(255, 255, 255); 
+        }
+        .silex-id-1474475294201-14 {
+            min-height: 60px; 
+            width: 242px; 
+            top: 10px; 
+            left: 100px; 
+        }
+        .silex-id-1474475324302-15 {
+            min-height: 55px; 
+            width: 143px; 
+            top: 14px; 
+            left: 251px; 
+        }
+        .silex-id-1474475693540-21 {
+            min-height: 50px; 
+            width: 157px; 
+            top: 79px; 
+            left: 399px; 
+        }
+        .silex-id-1474475715424-22 {
+            min-height: 69px; 
+            width: 224px; 
+            top: 115px; 
+            left: 560px; 
+        }
+        .silex-id-1474475736899-23 {
+            min-height: 82px; 
+            width: 246px; 
+            top: 121px; 
+            left: 269px; 
+        }
+        .silex-id-1474637806529-49 {
+            min-height: 79px; 
+            width: 243px; 
+            top: 219px; 
+            left: 510px; 
+        }
+        .silex-id-1474474922746-7 {
+            min-height: 381px; 
+            width: 20px; 
+            top: 1963px; 
+            left: 0px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474474922746-7 {
+            top: 1723px; 
+            left: 0px; 
+            width: 469px; 
+            min-height: 413px; 
+        }
+        }.silex-id-1474474922747-8 {
+            min-height: 100px; 
+            background-color: rgba(0,74,122,1); 
+            width: 1200px; 
+        }
+        .silex-id-1474628571117-46 {
+            min-height: 381px; 
+            width: 1200px; 
+            top: 0px; 
+            left: 0px; 
+            background-color: rgba(0,74,122,1); 
+            background-image: url('assets/bg2-small.jpg'); 
+            background-size: cover; 
+            opacity: 0.1; 
+        }
+        .silex-id-1474476012540-26 {
+            min-height: 85px; 
+            width: 212px; 
+            top: 227px; 
+            left: 480px; 
+        }
+        .silex-id-1474476052652-27 {
+            min-height: 148px; 
+            width: 423px; 
+            top: 55px; 
+            left: 374px; 
+        }
+        .silex-id-1474476306876-28 {
+            min-height: 1449px; 
+            width: 1430px; 
+            top: 2442px; 
+            left: 0px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474476306876-28 {
+            top: 1969px; 
+            left: 0px; 
+            width: 469px; 
+            min-height: 1363px; 
+            background-color: rgba(255,255,255,1); 
+        }
+        }.silex-id-1474476306876-29 {
+            min-height: 1836px; 
+            background-color: rgba(255,255,255,1); 
+            width: 1200px; 
+            top: 0px; 
+            left: 115px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474476306876-29 {
+            top: 0px; 
+            left: 12px; 
+            width: 445px; 
+            min-height: 3045px; 
+        }
+        }.silex-id-1474477915631-36 {
+            min-height: 66px; 
+            width: 811px; 
+            top: 24px; 
+            left: 190px; 
+        }
+        .silex-id-1474476306876-30 {
+            min-height: 185px; 
+            width: 299px; 
+            top: 133px; 
+            left: 190px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474476306876-30 {
+            top: 204px; 
+            left: 3px; 
+            width: 217px; 
+            min-height: 196px; 
+        }
+        }.silex-id-1474640021995-60 {
+            min-height: 216px; 
+            width: 299px; 
+            top: 130px; 
+            left: 691px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474640021995-60 {
+            top: 306px; 
+            left: 228px; 
+            width: 213px; 
+            min-height: 150px; 
+        }
+        }.silex-id-1474639882997-57 {
+            min-height: 221px; 
+            width: 213px; 
+            top: 359px; 
+            left: 234px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474639882997-57 {
+            top: 351px; 
+            left: 9px; 
+            width: 191px; 
+            min-height: 199px; 
+        }
+        }.silex-id-1474638641568-50 {
+            min-height: 185px; 
+            width: 299px; 
+            top: 388px; 
+            left: 700px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474638641568-50 {
+            top: 216px; 
+            left: 225px; 
+            width: 217px; 
+            min-height: 172px; 
+        }
+        }.silex-id-1474638747798-51 {
+            min-height: 185px; 
+            width: 299px; 
+            top: 627px; 
+            left: 190px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474638747798-51 {
+            top: 486px; 
+            left: 3px; 
+            width: 217px; 
+            min-height: 292px; 
+        }
+        }.silex-id-1474639871673-56 {
+            min-height: 194px; 
+            width: 194px; 
+            top: 643px; 
+            left: 760px; 
+        }
+        .silex-id-1474640079280-61 {
+            min-height: 210px; 
+            width: 210px; 
+            top: 885px; 
+            left: 236px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474640079280-61 {
+            top: 933px; 
+            left: 16px; 
+            width: 163px; 
+            min-height: 163px; 
+        }
+        }.silex-id-1474638984042-55 {
+            min-height: 185px; 
+            width: 299px; 
+            top: 915px; 
+            left: 700px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474638984042-55 {
+            top: 876px; 
+            left: 4px; 
+            width: 217px; 
+            min-height: 196px; 
+        }
+        }.silex-id-1474638954698-54 {
+            min-height: 185px; 
+            width: 299px; 
+            top: 1155px; 
+            left: 198px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474638954698-54 {
+            top: 558px; 
+            left: 225px; 
+            width: 217px; 
+            min-height: 148px; 
+        }
+        }.silex-id-1474639982967-59 {
+            min-height: 234px; 
+            width: 234px; 
+            top: 1141px; 
+            left: 733px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474639982967-59 {
+            top: 1184px; 
+            left: 270px; 
+            width: 158px; 
+            min-height: 158px; 
+        }
+        }.silex-id-1474640132684-63 {
+            min-height: 315px; 
+            width: 1430px; 
+            top: 3891px; 
+            left: 0px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474640132684-63 {
+            background-color: rgba(206,216,228,1); 
+            min-height: 249px; 
+        }
+        }.silex-id-1474640132683-62 {
+            min-height: 100px; 
+            background-color: rgba(206,216,228,1); 
+            width: 1200px; 
+            top: 0px; 
+            left: 115px; 
+        }
+        .silex-id-1474640229624-64 {
+            min-height: 26px; 
+            width: 687px; 
+            top: 21px; 
+            left: 272px; 
+        }
+        .silex-id-1474721741953-78 {
+            min-height: 195px; 
+            width: 783px; 
+            top: 101px; 
+            left: 200px; 
+            background-color: transparent; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474721741953-78 {
+            top: 222px; 
+            left: 11px; 
+            width: 423px; 
+            min-height: 44px; 
+        }
+        }.silex-id-1474721722565-77 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 46px; 
+            left: 68px; 
+        }
+        .silex-id-1474721720720-76 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 76px; 
+            left: 155px; 
+        }
+        .silex-id-1474721709952-75 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 72px; 
+            left: 91px; 
+        }
+        .silex-id-1474721700475-73 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 36px; 
+            left: 35px; 
+        }
+        .silex-id-1474721696794-72 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 96px; 
+            left: 54px; 
+        }
+        .silex-id-1474721681312-71 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 111px; 
+            left: 54px; 
+        }
+        .silex-id-1474721679001-70 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 121px; 
+            left: 105px; 
+        }
+        .silex-id-1474721675148-69 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 95px; 
+            left: 18px; 
+        }
+        .silex-id-1474721665058-67 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 88px; 
+            left: 13px; 
+        }
+        .silex-id-1474721661905-66 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 88px; 
+            left: 65px; 
+        }
+        .silex-id-1474721653456-65 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 113px; 
+            left: 210px; 
+        }
+        .silex-id-1474722266339-79 {
+            min-height: 20px; 
+            width: 20px; 
+            top: 120px; 
+            left: 183px; 
+        }
+        .silex-id-1474394605264-1 {
+            min-height: 100px; 
+            width: -1503px; 
+            top: 100px; 
+            left: 100px; 
+        }
+        @media only screen and (max-width: 480px), only screen and (max-device-width: 480px){.silex-id-1474394605264-1 {
+            top: 2766px; 
+            left: 0px; 
+            width: 469px; 
+            min-height: 152px; 
+            background-color: rgba(206,216,228,1); 
+        }
+        }.silex-id-1474394605263-0 {
+            min-height: 100px; 
+            background-color: rgba(206,216,228,1); 
+            top: 0px; 
+            left: 213px; 
+            width: 1200px; 
+        }
+        .silex-id-1442914737143-3 {
+            min-height: 36px; 
+            width: 960px; 
+            top: 39px; 
+            left: 113px; 
+        }
+    </style>
+
+    <script type="text/javascript" class="silex-json-styles">
+        [{"desktop":{"body-initial":{"background-color":"rgba(192,210,231,1)"},"background-initial":{"background-color":"rgb(255, 255, 255)","top":"5px","left":"154px","width":"960px","min-height":"600px"},"silex-id-1442914589168-2":{"min-height":"50px","width":"400px","top":"635px","left":"6px","background-color":"transparent"},"silex-id-1442914737143-3":{"min-height":"36px","width":"960px","top":"39px","left":"113px"},"silex-id-1474326133122-0":{"min-height":"100px","width":"960px","background-color":"transparent","top":"0px","left":"521px"},"silex-id-1474326133123-1":{"min-height":"60px","width":"1623px","top":"85px","left":"0px"},"silex-id-1474326176392-2":{"min-height":"100px","width":"1155px","background-color":"rgb(255, 255, 255)","top":"0px","left":"234px"},"silex-id-1474326176392-3":{"min-height":"472px","width":"1623px","top":"5px","left":"0px"},"silex-id-1474326192411-4":{"min-height":"50px","width":"961px","background-color":"transparent","top":"0px","left":"331px"},"silex-id-1474326192412-5":{"min-height":"50px","width":"1623px","top":"5px","left":"0px"},"silex-id-1474369848204-0":{"min-height":"960px","background-color":"rgb(255, 255, 255)"},"silex-id-1474369848205-1":{"min-height":"562px","width":"1623px","top":"5px","left":"0px"},"silex-id-1474394605263-0":{"min-height":"100px","background-color":"rgba(206,216,228,1)","top":"0px","left":"213px","width":"1200px"},"silex-id-1474394605264-1":{"min-height":"100px","width":"-1503px","top":"100px","left":"100px"},"silex-id-1474394621032-2":{"min-height":"63px","background-color":"rgba(0,74,122,1)","top":"0px","left":"209px","width":"1200px"},"silex-id-1474394621033-3":{"min-height":"63px","width":"20px","top":"5px","left":"0px"},"silex-id-1474408836543-1":{"min-height":"35px","width":"26px","top":"0px","left":"0px"},"silex-id-1474409102114-2":{"min-height":"788px","background-color":"rgba(0,74,122,1)","top":"0px","left":"115px","width":"1200px","background-image":"","background-position":"center center","background-repeat":"no-repeat","background-size":"cover"},"silex-id-1474409102114-3":{"min-height":"694px","width":"1430px","top":"63px","left":"0px"},"silex-id-1474409165718-4":{"min-height":"48px","width":"60px","top":"5px","left":"29px"},"silex-id-1474472686825-5":{"min-height":"102px","width":"79px","top":"73px","left":"562px"},"silex-id-1474472716691-6":{"min-height":"150px","width":"945px","top":"194px","left":"117px"},"silex-id-1474472923531-7":{"min-height":"407px","background-color":"rgba(206,216,228,1)","width":"1200px","top":"0px","left":"115px"},"silex-id-1474472923532-8":{"min-height":"344px","width":"1430px","top":"851px","left":"0px"},"silex-id-1474473479197-9":{"min-height":"369px","width":"816px","top":"-84px","left":"190px","background-color":"transparent"},"silex-id-1474473839999-10":{"min-height":"117px","width":"364px","top":"55px","left":"190px"},"silex-id-1474474097724-0":{"min-height":"151px","width":"364px","top":"55px","left":"634px"},"silex-id-1474474384996-1":{"min-height":"134px","width":"364px","top":"299px","left":"190px"},"silex-id-1474474385000-2":{"min-height":"116px","width":"364px","top":"299px","left":"634px"},"silex-id-1474474787859-3":{"min-height":"368px","background-color":"rgba(255,255,255,1)","width":"1200px","top":"0px","left":"115px"},"silex-id-1474474787860-4":{"min-height":"420px","width":"1430px","top":"1641px","left":"0px"},"silex-id-1474474922746-7":{"min-height":"381px","width":"20px","top":"1963px","left":"0px"},"silex-id-1474474922747-8":{"min-height":"100px","background-color":"rgba(0,74,122,1)","width":"1200px"},"silex-id-1474475027688-12":{"min-height":"66px","width":"557px","top":"19px","left":"326px"},"silex-id-1474475294201-14":{"min-height":"60px","width":"242px","top":"10px","left":"100px"},"silex-id-1474475324302-15":{"min-height":"55px","width":"143px","top":"14px","left":"251px"},"silex-id-1474475532881-16":{"min-height":"540px","width":"20px","top":"1096px","left":"0px"},"silex-id-1474475532882-17":{"min-height":"218px","background-color":"rgba(206,216,228,1)","width":"1200px","top":"0px","left":"212px"},"silex-id-1474475532882-18":{"min-height":"65px","width":"740px","top":"1px","left":"201px"},"silex-id-1474475532882-19":{"min-height":"60px","width":"242px","top":"101px","left":"38px"},"silex-id-1474475532882-20":{"min-height":"55px","width":"143px","top":"103px","left":"321px"},"silex-id-1474475693540-21":{"min-height":"50px","width":"157px","top":"79px","left":"399px"},"silex-id-1474475715424-22":{"min-height":"69px","width":"224px","top":"115px","left":"560px"},"silex-id-1474475736899-23":{"min-height":"82px","width":"246px","top":"121px","left":"269px"},"silex-id-1474475753554-24":{"min-height":"149px","width":"149px","top":"0px","left":"1473px"},"silex-id-1474475972664-25":{"min-height":"85px","width":"212px","top":"432px","left":"494px"},"silex-id-1474476012540-26":{"min-height":"85px","width":"212px","top":"227px","left":"480px"},"silex-id-1474476052652-27":{"min-height":"148px","width":"423px","top":"55px","left":"374px"},"silex-id-1474476306876-28":{"min-height":"1449px","width":"1430px","top":"2442px","left":"0px"},"silex-id-1474476306876-29":{"min-height":"1836px","background-color":"rgba(255,255,255,1)","width":"1200px","top":"0px","left":"115px"},"silex-id-1474476306876-30":{"min-height":"185px","width":"299px","top":"133px","left":"190px"},"silex-id-1474476306876-31":{"min-height":"60px","width":"242px","top":"101px","left":"192px"},"silex-id-1474476306876-32":{"min-height":"55px","width":"143px","top":"167px","left":"503px"},"silex-id-1474476306877-33":{"min-height":"50px","width":"157px","top":"101px","left":"497px"},"silex-id-1474476306877-34":{"min-height":"69px","width":"224px","top":"92px","left":"760px"},"silex-id-1474476306877-35":{"min-height":"82px","width":"246px","top":"165px","left":"740px"},"silex-id-1474477915631-36":{"min-height":"66px","width":"811px","top":"24px","left":"190px"},"silex-id-1474578602644-37":{"min-height":"24px","width":"471px","top":"20px","left":"677px"},"silex-id-1474579300132-38":{"min-height":"41px","width":"135px","top":"12px","left":"50px","background-color":"transparent"},"silex-id-1474580644053-39":{"min-height":"263px","width":"803px","top":"85px","left":"205px","background-color":"rgb(255, 255, 255)"},"silex-id-1474627904256-40":{"min-height":"328px","width":"540px","top":"63px","left":"52px","background-color":"transparent","background-image":"url('assets/bg1.jpg')","background-size":"cover","opacity":"0.16"},"silex-id-1474628168831-41":{"min-height":"217px","width":"301px","top":"26px","left":"25px","background-color":"rgb(255, 255, 255)"},"silex-id-1474628183145-42":{"min-height":"788px","width":"1200px","top":"0px","left":"0px","background-color":"rgba(0,74,122,1)","background-image":"url('assets/bg1-small2.jpg')","background-size":"cover","opacity":"0.1"},"silex-id-1474628388301-43":{"min-height":"100px","width":"100px","top":"148px","left":"657px"},"silex-id-1474628524882-45":{"min-height":"381px","width":"1200px","top":"0px","left":"0px","background-color":"transparent"},"silex-id-1474628571117-46":{"min-height":"381px","width":"1200px","top":"0px","left":"0px","background-color":"rgba(0,74,122,1)","background-image":"url('assets/bg2-small.jpg')","background-size":"cover","opacity":"0.1"},"silex-id-1474633315303-47":{"min-height":"100px","width":"100px","top":"100px","left":"100px","background-color":"rgb(255, 255, 255)"},"silex-id-1474637806529-49":{"min-height":"79px","width":"243px","top":"219px","left":"510px"},"silex-id-1474638641568-50":{"min-height":"185px","width":"299px","top":"388px","left":"700px"},"silex-id-1474638747798-51":{"min-height":"185px","width":"299px","top":"627px","left":"190px"},"silex-id-1474638954698-54":{"min-height":"185px","width":"299px","top":"1155px","left":"198px"},"silex-id-1474638984042-55":{"min-height":"185px","width":"299px","top":"915px","left":"700px"},"silex-id-1474639871673-56":{"min-height":"194px","width":"194px","top":"643px","left":"760px"},"silex-id-1474639882997-57":{"min-height":"221px","width":"213px","top":"359px","left":"234px"},"silex-id-1474639963173-58":{"min-height":"1163px","width":"1920px","top":"2882px","left":"176px"},"silex-id-1474639982967-59":{"min-height":"234px","width":"234px","top":"1141px","left":"733px"},"silex-id-1474640021995-60":{"min-height":"216px","width":"299px","top":"130px","left":"691px"},"silex-id-1474640079280-61":{"min-height":"210px","width":"210px","top":"885px","left":"236px"},"silex-id-1474640132683-62":{"min-height":"100px","background-color":"rgba(206,216,228,1)","width":"1200px","top":"0px","left":"115px"},"silex-id-1474640132684-63":{"min-height":"315px","width":"1430px","top":"3891px","left":"0px"},"silex-id-1474640229624-64":{"min-height":"26px","width":"687px","top":"21px","left":"272px"},"silex-id-1474721653456-65":{"min-height":"20px","width":"20px","top":"113px","left":"210px"},"silex-id-1474721661905-66":{"min-height":"20px","width":"20px","top":"88px","left":"65px"},"silex-id-1474721665058-67":{"min-height":"20px","width":"20px","top":"88px","left":"13px"},"silex-id-1474721667683-68":{"min-height":"149px","width":"149px","top":"4974px","left":"100px"},"silex-id-1474721675148-69":{"min-height":"20px","width":"20px","top":"95px","left":"18px"},"silex-id-1474721679001-70":{"min-height":"20px","width":"20px","top":"121px","left":"105px"},"silex-id-1474721681312-71":{"min-height":"20px","width":"20px","top":"111px","left":"54px"},"silex-id-1474721696794-72":{"min-height":"20px","width":"20px","top":"96px","left":"54px"},"silex-id-1474721700475-73":{"min-height":"20px","width":"20px","top":"36px","left":"35px"},"silex-id-1474721702617-74":{"min-height":"500px","width":"500px","top":"4974px","left":"100px"},"silex-id-1474721709952-75":{"min-height":"20px","width":"20px","top":"72px","left":"91px"},"silex-id-1474721720720-76":{"min-height":"20px","width":"20px","top":"76px","left":"155px"},"silex-id-1474721722565-77":{"min-height":"20px","width":"20px","top":"46px","left":"68px"},"silex-id-1474721741953-78":{"min-height":"195px","width":"783px","top":"101px","left":"200px","background-color":"transparent"},"silex-id-1474722266339-79":{"min-height":"20px","width":"20px","top":"120px","left":"183px"}},"mobile":{"silex-id-1474475532881-16":{"top":"685px","left":"0px","width":"469px","min-height":"720px","background-color":"rgba(206,216,228,1)"},"silex-id-1474474385000-2":{"top":"580px","left":"11px","width":"424px","min-height":"117px"},"silex-id-1474473839999-10":{"top":"23px","left":"11px","width":"423px","min-height":"117px"},"silex-id-1474474097724-0":{"top":"186px","left":"11px","width":"423px","min-height":"168px"},"silex-id-1474474384996-1":{"top":"400px","left":"11px","width":"423px","min-height":"134px"},"silex-id-1474475532882-17":{"top":"0px","left":"12px","width":"446px","min-height":"720px"},"silex-id-1474474787860-4":{"top":"1349px","left":"0px","width":"469px","min-height":"374px"},"silex-id-1474476306876-28":{"top":"1969px","left":"0px","width":"469px","min-height":"1363px","background-color":"rgba(255,255,255,1)"},"silex-id-1474394605264-1":{"top":"2766px","left":"0px","width":"469px","min-height":"152px","background-color":"rgba(206,216,228,1)"},"silex-id-1474409102114-3":{"top":"258px","left":"0px","width":"469px","min-height":"519px"},"silex-id-1474476306876-30":{"top":"204px","left":"3px","width":"217px","min-height":"196px"},"silex-id-1474409165718-4":{"top":"34px","left":"66px","width":"70px","min-height":"34px"},"silex-id-1474408836543-1":{"top":"-2px","left":"2px","width":"58px","min-height":"68px"},"silex-id-1474394621033-3":{"top":"0px","left":"0px","width":"469px","min-height":"258px"},"silex-id-1474579300132-38":{"top":"14px","left":"154px","width":"138px","min-height":"102px"},"silex-id-1474578602644-37":{"top":"107px","left":"39px","width":"368px","min-height":"63px"},"silex-id-1474472716691-6":{"top":"85px","left":"72px","width":"302px","min-height":"349px"},"silex-id-1474474922746-7":{"top":"1723px","left":"0px","width":"469px","min-height":"413px"},"silex-id-1474476306876-29":{"top":"0px","left":"12px","width":"445px","min-height":"3045px"},"silex-id-1474638641568-50":{"top":"216px","left":"225px","width":"217px","min-height":"172px"},"silex-id-1474638747798-51":{"top":"486px","left":"3px","width":"217px","min-height":"292px"},"silex-id-1474638954698-54":{"top":"558px","left":"225px","width":"217px","min-height":"148px"},"silex-id-1474638984042-55":{"top":"876px","left":"4px","width":"217px","min-height":"196px"},"silex-id-1474640021995-60":{"top":"306px","left":"228px","width":"213px","min-height":"150px"},"silex-id-1474639982967-59":{"top":"1184px","left":"270px","width":"158px","min-height":"158px"},"silex-id-1474639882997-57":{"top":"351px","left":"9px","width":"191px","min-height":"199px"},"silex-id-1474640079280-61":{"top":"933px","left":"16px","width":"163px","min-height":"163px"},"silex-id-1474721741953-78":{"top":"222px","left":"11px","width":"423px","min-height":"44px"},"silex-id-1474640132684-63":{"background-color":"rgba(206,216,228,1)","min-height":"249px"}}}]
+    </script>
+    <title>Silex website builder</title>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2.2" data-silex-viewport="">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <meta name="description" content="Create websites based on open standards. Own your tools and your data!  Silex is free / libre because free minds need to have free tools.">
+    <link href="assets/logo-silex.png" rel="shortcut icon">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Silex website builder">
+    <meta name="og:title" content="Silex website builder">
+    <meta name="twitter:description" content="Create websites based on open standards. Own your tools and your data!  Silex is free / libre because free minds need to have free tools.">
+    <meta name="og:description" content="Create websites based on open standards. Own your tools and your data!  Silex is free / libre because free minds need to have free tools.">
+    <meta name="twitter:image" content="//www.silex.me/assets/silex-screenshot.png">
+    <meta name="og:image" content="//www.silex.me/assets/silex-screenshot.png">
+    <meta name="twitter:site" content="@silexlabs">
+    <meta name="publicationPath" content="/api/1.0/www/exec/put//////////////////Projects/new-www.silex.me">
+
+
+
+    <style id="current-page-style">
+        .page--{display:inherit; }
+    </style>
+    <!-- Silex HEAD tag do not remove -->
+    <link rel="stylesheet" href="css/unslider.css" type="text/css" />
+    <link rel="stylesheet" href="css/unslider-dots.css" type="text/css" />
+    <script src="js/unslider-min.js" type="text/javascript"></script>
+    <!-- End of Silex HEAD tag do not remove -->
+</head>
+
+<body data-silex-id="body-initial" class="body-initial enable-mobile silex-runtime" data-silex-type="container">
+    <div data-silex-type="container" class="prevent-draggable container-element editable-style silex-id-1474394621033-3 section-element" data-silex-id="silex-id-1474394621033-3">
+        <div data-silex-type="container" class="editable-style silex-element-content default-site-width silex-id-1474394621032-2 silex-container-content container-element prevent-draggable" data-silex-id="silex-id-1474394621032-2">
+
+
+
+            <div data-silex-type="container" class="editable-style silex-id-1474579300132-38 container-element" data-silex-id="silex-id-1474579300132-38">
+                <div data-silex-type="image" class="editable-style silex-id-1474408836543-1 image-element" data-silex-id="silex-id-1474408836543-1"><img src="assets/logo-silex-white.png" class="silex-element-content"></div>
+                <div data-silex-type="text" class="editable-style silex-id-1474409165718-4 text-element" data-silex-id="silex-id-1474409165718-4">
+                    <div class="silex-element-content normal"><font face="times new roman, serif" size="6" color="#ffffff">ilex</font></div>
+                </div>
+            </div>
+            <div data-silex-type="text" class="editable-style silex-id-1474578602644-37 text-element nav" data-silex-id="silex-id-1474578602644-37">
+                <div class="silex-element-content normal">
+                    <div style="text-align: center;"><span style="font-family: verdana, sans-serif;"><font size="2"><font color="#f6b26b"><a href="#">Home</a></font><font color="#ffffff">&nbsp; &nbsp; </font><a href="https://github.com/silexlabs/Silex/issues?labels=template&amp;state=open" style="color: rgb(255, 255, 255);">Templates</a><font color="#ffffff">&nbsp; &nbsp;&nbsp;</font><a href="https://www.silexlabs.org/category/the-blog/blog-silex" style="color: rgb(255, 255, 255);">Blog</a><font color="#ffffff">&nbsp; &nbsp; </font><a href="https://github.com/silexlabs/Silex/wiki" style="color: rgb(255, 255, 255);">Docs</a><font color="#ffffff">&nbsp; &nbsp; </font><a href="https://github.com/silexlabs/Silex/" style="color: rgb(255, 255, 255);">Source code</a><font color="#ffffff">&nbsp; &nbsp; </font><a href="https://editor.silex.me" style="color: rgb(255, 255, 255);"><b>Start now!</b></a></font></span></div>
+                </div>
+            </div>
+        </div>
+        <div data-silex-type="image" class="editable-style silex-id-1474475753554-24 image-element right hide-on-mobile" data-silex-id="silex-id-1474475753554-24" data-silex-href="https://github.com/silexlabs/Silex/"><img src="assets/forkme.png" class="silex-element-content"></div>
+    </div>
+    <div class="silex-pages">
+
+
+        <div data-silex-type="image" data-silex-id="silex-id-hamburger-menu" class="menu-button editable-style silex-id-hamburger-menu image-element paged-element prevent-draggable prevent-resizable hide-on-mobile page--"><img alt="open mobile menu" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAoCAYAAAC8cqlMAAAB5UlEQVR42u2ZPWvCUBSGM+UfFO3e3dLu/QN+oKj4EUXRQREEJYgoiCAu6qCogyDo7iJ21UUaKqEgCC4iiEMGB3UVgsnpTWj/wfVK2nvhGbKEPJyT996TMMzPGg6H5mKx+GgkyuWyeTQasb8OTDwef4tEIp8+n+/LYIjJZJJHQiwzm81M6OLDarWqNpsNjEYgEJCy2ewT0+/3TagighElNFAnQT6ft1ARKkJFqMgfFvF4PFpuEwFtdrcRqVarIIoirFYrIiyXSxiPx+B2u/GJBINBuF6vQHopigK1Wg2fCMdxcLlciIuoqgqNRgOfiN1uB3Qwg91uB8fjkQiHwwEmkwne1qLxS0VuKKJle71eh06nQ4Rmswk8z+MVcTqdsNlsQJZlotF7Pp8hk8ngE4lGo/qN7xG/vV4Pb0Xm8zlxkdPpBGgMx/+yJxIJKBQKRMjlcuBwOGhq/Q+RcDgMsViMCFrAuFwu/CKDwQC22y1IkkSE/X4PgiDo+xc2Ea0S9zjGa/Hb7Xbxifj9fj0K7yFSqVTwtlY6nYbpdKpPiSRYLBbQarX0PYymFhWhIlSEilCRW6GdyUqlkoVZr9dsKpXiOY6TtW+7BkNBz/7ebrcf9L+6Xq+XRYPMMyrTq5EIhUIvaAjTJb4BBNQ2yhnth0wAAAAASUVORK5CYII="
+            class="silex-element-content"></div><a id="page--" data-silex-type="page" class="page-element page-link-active">.</a></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div data-silex-type="container" class="prevent-draggable container-element editable-style silex-id-1474409102114-3 section-element hero" data-silex-id="silex-id-1474409102114-3">
+        <div data-silex-type="container" class="editable-style silex-id-1474409102114-2 container-element prevent-draggable silex-aheroeleheroment-content default-site-width silex-container-content" data-silex-id="silex-id-1474409102114-2">
+
+
+
+
+            <div data-silex-type="html" class="editable-style silex-id-1474628183145-42 html-element hide-on-mobile" data-silex-id="silex-id-1474628183145-42">
+                <div class="silex-element-content"></div>
+            </div>
+            <div data-silex-type="image" class="editable-style silex-id-1474472686825-5 image-element hide-on-mobile" data-silex-id="silex-id-1474472686825-5"><img src="assets/logo-silex-white.png" class="silex-element-content"></div>
+            <div data-silex-type="text" class="editable-style silex-id-1474472716691-6 text-element" data-silex-id="silex-id-1474472716691-6">
+                <div class="silex-element-content normal">
+                    <h1 style="text-align: center;" class="heading1"><font face="verdana, sans-serif" style="font-weight: normal;" color="#ffffff" size="7">Free Website Builder</font></h1>
+                    <h2 style="text-align: center;" class="heading2"><span style="font-weight: normal;"><font face="verdana, sans-serif" color="#ffffff">Create websites based on open standards.&nbsp;Own your tools and your data!&nbsp;<br>Silex is free / libre because free minds need to have free tools.</font></span></h2></div>
+            </div>
+            <div data-silex-type="image" class="editable-style silex-id-1474475972664-25 image-element hide-on-mobile" data-silex-id="silex-id-1474475972664-25" data-silex-href="https://editor.silex.me"><img src="assets/bouton-call-01.png" class="silex-element-content"></div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div data-silex-type="container" class="prevent-draggable container-element editable-style silex-id-1474472923532-8 section-element hide-on-mobile" data-silex-id="silex-id-1474472923532-8">
+        <div data-silex-type="container" class="editable-style silex-element-content default-site-width silex-id-1474472923531-7 silex-container-content container-element prevent-draggable" data-silex-id="silex-id-1474472923531-7">
+            <div data-silex-type="html" class="editable-style silex-id-1474473479197-9 html-element" data-silex-id="silex-id-1474473479197-9">
+                <div class="silex-element-content">
+                    <div id="slideshow"></div>
+                    <script type="text/javascript">
+                        $(function(){
+                            setTimeout(function() {
+                                silex_github_widget('#slideshow', ['template', 'showcase'], true, function() {
+                                    $('#slideshow').unslider({
+                                        autoplay: true,
+                                        infinite: true,
+                                        speed: 1000
+                                    });
+                                });
+                            }, 0);
+                        });
+                    </script>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+    <div data-silex-type="container" class="prevent-draggable container-element editable-style section-element silex-id-1474475532881-16" data-silex-id="silex-id-1474475532881-16">
+
+        <div data-silex-type="container" class="editable-style silex-element-content default-site-width silex-container-content container-element prevent-draggable silex-id-1474475532882-17" data-silex-id="silex-id-1474475532882-17">
+
+            <div data-silex-type="text" class="editable-style silex-id-1474473839999-10 text-element feature" data-silex-id="silex-id-1474473839999-10">
+                <div class="silex-element-content normal">
+                    <h2 class="heading2">Fast design &amp; prototyping</h2>
+                    <div>When you change something in Silex, you see the result immediately. Iterating on design is much easier.&nbsp;</div>
+                </div>
+            </div>
+            <div data-silex-type="text" class="editable-style text-element feature silex-id-1474474097724-0" data-silex-id="silex-id-1474474097724-0">
+                <div class="silex-element-content normal">
+                    <h2 class="heading2">FREE, But How FREE ?</h2>
+                    <div>
+                        <div>As a non-profit and a community, we’re free to innovate without compromise. Silex is free / libre, without hidden costs or licensing hassle.</div>
+                        <div>
+                            <br>
+                        </div>
+                        <div>You are welcome to contribute and to propose services to the community.</div>
+                    </div>
+                </div>
+            </div>
+            <div data-silex-type="text" class="editable-style text-element feature silex-id-1474474384996-1" data-silex-id="silex-id-1474474384996-1">
+                <div class="silex-element-content normal">
+                    <h2 class="heading2">Own your data</h2>
+                    <div>
+                        <div>While editing your site on silex.me your files are on your hard drive, available to Silex through a cloud service you trust or own: FTP, Cozycloud, Owncloud, Dropbox, Github and more to come.</div>
+                    </div>
+                </div>
+            </div>
+            <div data-silex-type="text" class="editable-style text-element feature silex-id-1474474385000-2" data-silex-id="silex-id-1474474385000-2">
+                <div class="silex-element-content normal">
+                    <h2 class="heading2">Host your website anywhere</h2>
+                    <div>
+                        <div>Your work on silex.me will result in an HTML page stored on your computer. Hit "publish" to optimize your site and host it anywhere.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-silex-type="container" class="prevent-draggable container-element editable-style silex-id-1474474787860-4 section-element" data-silex-id="silex-id-1474474787860-4">
+        <div data-silex-type="container" class="editable-style silex-element-content default-site-width silex-id-1474474787859-3 silex-container-content container-element prevent-draggable" data-silex-id="silex-id-1474474787859-3">
+            <div data-silex-type="text" class="editable-style silex-id-1474475027688-12 text-element" data-silex-id="silex-id-1474475027688-12">
+                <div class="silex-element-content normal">
+                    <h2 style="text-align: center;"><span style="font-weight: normal;"><font face="verdana, sans-serif">PROUDLY SPONSORED BY THE BEST</font></span></h2></div>
+            </div>
+
+
+
+
+
+            <div data-silex-type="container" class="editable-style silex-id-1474580644053-39 container-element list" data-silex-id="silex-id-1474580644053-39">
+                <div data-silex-type="image" class="editable-style silex-id-1474475294201-14 image-element" data-silex-id="silex-id-1474475294201-14" data-silex-href="https://www.silexlabs.org"><img src="assets/logo-silexlabs-2015.jpg" class="silex-element-content"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474475324302-15 image-element" data-silex-id="silex-id-1474475324302-15" data-silex-href="https://piwik.org/"><img src="assets/logo-piwik.jpg" class="silex-element-content"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474475693540-21 image-element" data-silex-id="silex-id-1474475693540-21" data-silex-href="https://fr.linkedin.com/in/polgoasdoue"><img src="assets/logo-UFO-silex-01.jpg" class="silex-element-content"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474475715424-22 image-element" data-silex-id="silex-id-1474475715424-22" data-silex-href="https://www.gandi.net/supports/#silex"><img src="assets/gandi.jpg" class="silex-element-content"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474475736899-23 image-element" data-silex-id="silex-id-1474475736899-23" data-silex-href="https://www.browserstack.com/"><img src="assets/browserstack.jpg" class="silex-element-content"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474637806529-49 image-element" data-silex-id="silex-id-1474637806529-49" data-silex-href="https://cozy.io/"><img src="assets/cozy-cloud.jpg" class="silex-element-content"></div>
+            </div>
+        </div>
+    </div>
+    <div data-silex-type="container" class="prevent-draggable container-element editable-style section-element silex-id-1474474922746-7" data-silex-id="silex-id-1474474922746-7">
+
+        <div data-silex-type="container" class="editable-style silex-element-content default-site-width silex-container-content container-element prevent-draggable silex-id-1474474922747-8" data-silex-id="silex-id-1474474922747-8">
+
+
+            <div data-silex-type="html" class="editable-style silex-id-1474628571117-46 html-element hide-on-mobile" data-silex-id="silex-id-1474628571117-46">
+                <div class="silex-element-content"></div>
+            </div>
+            <div data-silex-type="image" class="editable-style image-element silex-id-1474476012540-26 hide-on-mobile" data-silex-id="silex-id-1474476012540-26" data-silex-href="https://editor.silex.me"><img src="assets/bouton-call-01.png" class="silex-element-content"></div>
+            <div data-silex-type="text" class="editable-style silex-id-1474476052652-27 text-element" data-silex-id="silex-id-1474476052652-27">
+                <div class="silex-element-content normal">
+                    <h1 class="heading1" style="text-align: center;"><font color="#ffffff" style="font-weight: normal;" size="6">Design your websites with&nbsp;</font></h1>
+                    <h1 class="heading1" style="text-align: center;"><font color="#ffffff" style="font-weight: normal;" size="6">Silex free website builder.</font></h1></div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div data-silex-type="container" class="prevent-draggable container-element editable-style section-element silex-id-1474476306876-28" data-silex-id="silex-id-1474476306876-28">
+
+        <div data-silex-type="container" class="editable-style silex-element-content default-site-width silex-container-content container-element prevent-draggable silex-id-1474476306876-29" data-silex-id="silex-id-1474476306876-29">
+            <div data-silex-type="text" class="editable-style text-element silex-id-1474477915631-36" data-silex-id="silex-id-1474477915631-36">
+                <div class="silex-element-content normal">
+                    <h2 style="text-align: center;"><font face="verdana, sans-serif"><span style="font-weight: normal;">All the features you need</span></font></h2></div>
+            </div>
+            <div data-silex-type="text" class="editable-style text-element silex-id-1474476306876-30 xmulti-col feature" data-silex-id="silex-id-1474476306876-30">
+                <div class="silex-element-content normal">
+                    <h2 class="heading2">Mobile friendly </h2>Silex generates a mobile version of your website automatically, and there is the built-in mobile editor to customize it.
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <div data-silex-type="image" class="editable-style silex-id-1474640021995-60 image-element" data-silex-id="silex-id-1474640021995-60"><img src="assets/responsive.jpg" class="silex-element-content"></div>
+            <div data-silex-type="image" class="editable-style silex-id-1474639882997-57 image-element" data-silex-id="silex-id-1474639882997-57"><img src="assets/Ic_cloud_queue_48px.svg.png" class="silex-element-content"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div data-silex-type="text" class="editable-style text-element xmulti-col feature silex-id-1474638641568-50" data-silex-id="silex-id-1474638641568-50">
+                <div class="silex-element-content normal">
+                    <h2 class="heading2">100% online</h2>Make websites in the browser, install nothing, never loose your data, work instantly from any computer.
+                    <br>
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <div data-silex-type="text" class="editable-style text-element xmulti-col feature silex-id-1474638747798-51" data-silex-id="silex-id-1474638747798-51">
+                <div class="silex-element-content normal">
+                    <h2 class="heading2">Learn the standards</h2>Only common settings are available in the visual editor. When you need more, Silex helps you write CSS without leaving the browser. No complex dialogs and menus, just the open web standards. What you learn here will be useful to you.
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <div data-silex-type="image" class="editable-style silex-id-1474639871673-56 image-element" data-silex-id="silex-id-1474639871673-56"><img src="assets/HTML5_logo_black.svg.png" class="silex-element-content"></div>
+            <div data-silex-type="image" class="editable-style silex-id-1474640079280-61 image-element" data-silex-id="silex-id-1474640079280-61"><img src="assets/search.png" class="silex-element-content"></div>
+            <div data-silex-type="text" class="editable-style text-element xmulti-col feature silex-id-1474638984042-55" data-silex-id="silex-id-1474638984042-55">
+                <div class="silex-element-content normal">
+                    <h2 class="heading2">Search engines</h2>The websites created on silex.me are search engine friendly, and Silex has all the options you need to optimize it for search engines.
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <div data-silex-type="text" class="editable-style text-element xmulti-col feature silex-id-1474638954698-54" data-silex-id="silex-id-1474638954698-54">
+                <div class="silex-element-content normal">
+                    <h2 class="heading2">Documentation </h2>The wiki is here to help you, and you can always ask for help on the forums.
+                    <div>
+                    </div>
+                </div>
+            </div>
+            <div data-silex-type="image" class="editable-style silex-id-1474639982967-59 image-element" data-silex-id="silex-id-1474639982967-59"><img src="assets/wiki.png" class="silex-element-content"></div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div data-silex-type="container" class="prevent-draggable container-element editable-style silex-id-1474640132684-63 section-element" data-silex-id="silex-id-1474640132684-63">
+        <div data-silex-type="container" class="editable-style silex-element-content default-site-width silex-id-1474640132683-62 silex-container-content container-element prevent-draggable" data-silex-id="silex-id-1474640132683-62">
+            <div data-silex-type="text" class="editable-style silex-id-1474640229624-64 text-element" data-silex-id="silex-id-1474640229624-64">
+                <div class="silex-element-content normal">
+                    <h2 class="heading2" style="text-align: center;"><span style="font-weight: normal;"><font face="verdana, sans-serif">Contact us! Advertise Silex!</font></span></h2></div>
+            </div>
+            <div data-silex-type="container" class="editable-style silex-id-1474721741953-78 container-element list cols4" data-silex-id="silex-id-1474721741953-78">
+                <div data-silex-type="image" class="editable-style silex-id-1474721722565-77 image-element" data-silex-id="silex-id-1474721722565-77" data-silex-href="https://github.com/silexlabs/Silex/" title="Silex on github"><img src="assets/github.png" class="silex-element-content" alt="Silex on github"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474721720720-76 image-element" data-silex-id="silex-id-1474721720720-76" data-silex-href="https://www.youtube.com/user/Silexlabs" title="Silex Labs Youtube channel"><img src="assets/youtube.png" class="silex-element-content" alt="Silex Labs Youtube channel"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474721709952-75 image-element" data-silex-id="silex-id-1474721709952-75" data-silex-href="https://en.wikipedia.org/wiki/Silex_website_builder" title="silex on wikipedia"><img src="assets/wikipedia.png" class="silex-element-content" alt="silex on wikipedia"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474721700475-73 image-element" data-silex-id="silex-id-1474721700475-73" data-silex-href="https://twitter.com/search?q=%23SilexV2" title="Silex Labs twitter"><img src="assets/twitter.png" class="silex-element-content" alt="Silex Labs twitter"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474721696794-72 image-element" data-silex-id="silex-id-1474721696794-72" data-silex-href="https://framateam.org/silexlabs/channels/silex" title="Chat wit Silex team"><img src="assets/slack.png" class="silex-element-content" alt="Chat wit Silex team"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474721681312-71 image-element" data-silex-id="silex-id-1474721681312-71" data-silex-href="https://www.linkedin.com/company/silex-labs/" title=" Silex Labs  on linkedin"><img src="assets/linkedin.png" class="silex-element-content" alt=" Silex Labs  on linkedin"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474721679001-70 image-element" data-silex-id="silex-id-1474721679001-70" data-silex-href="https://plus.google.com/communities/107373636457908189681" title="Silex Labs google+"><img src="assets/googleplus.png" class="silex-element-content" alt="Silex Labs google+"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474721675148-69 image-element" data-silex-id="silex-id-1474721675148-69" data-silex-href="https://framagit.org/silexlabs/Silex" title="gitlab silex"><img src="assets/gitlab.png" class="silex-element-content" alt="gitlab silex"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474721665058-67 image-element" data-silex-id="silex-id-1474721665058-67" data-silex-href="https://www.flickr.com/photos/120854033@N02/albums" title="Silex Labs photo albums"><img src="assets/flickr.png" class="silex-element-content" alt="Silex Labs photo albums"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474721661905-66 image-element" data-silex-id="silex-id-1474721661905-66" data-silex-href="https://www.facebook.com/silexlabs" title="Silex Labs on facebook"><img src="assets/facebook.png" class="silex-element-content" alt="Silex Labs on facebook"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474721653456-65 image-element" data-silex-id="silex-id-1474721653456-65" data-silex-href="https://framasphere.org/people/f37438103a9b013250aa2a0000053625" title="diaspora silex labs"><img src="assets/Diaspora.png" class="silex-element-content" alt="diaspora silex labs"></div>
+                <div data-silex-type="image" class="editable-style silex-id-1474722266339-79 image-element" data-silex-id="silex-id-1474722266339-79" data-silex-href="https://www.silexlabs.org/category/the-blog/blog-silex" title="Silex posts on Silex Labs blog"><img src="assets/wordpress.png" class="silex-element-content" alt="Silex posts on Silex Labs blog"></div>
+            </div>
+        </div>
+    </div>
+    <div data-silex-type="container" class="prevent-draggable container-element editable-style silex-id-1474394605264-1 section-element" data-silex-id="silex-id-1474394605264-1">
+        <div data-silex-type="container" class="editable-style silex-element-content default-site-width silex-id-1474394605263-0 silex-container-content container-element prevent-draggable" data-silex-id="silex-id-1474394605263-0">
+            <div data-silex-id="silex-id-1442914737143-3" class="editable-style silex-id-1442914737143-3 text-element" data-silex-type="text">
+                <div class="silex-element-content normal">
+                    <div style="text-align: center;"><a href="//www.silex.me">Powered by Silex</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
