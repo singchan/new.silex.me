@@ -4,7 +4,8 @@
             line-height: 1.5;
         }
         
-                div.right {
+                div.right, a.right {
+                    
                     right: 0;
                     left: auto;
                     z-index: 10;
@@ -166,7 +167,7 @@
             min-height: 149px; 
             width: 149px; 
             top: 0px; 
-            left: 1473px; 
+            left: 1434px; 
         }
         .silex-id-1474409102114-3 {
             min-height: 694px; 
