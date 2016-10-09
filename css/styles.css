@@ -39,6 +39,8 @@
     }
     .text-element.button:hover {
         background-color: #004a7a;
+        color: white;
+        text-decoration: inherit;
     }
     .list {
         -webkit-column-count: 2;
