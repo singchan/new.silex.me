@@ -28,7 +28,7 @@
     .hero h1 * {
         text-transform: uppercase;
     }
-    .button {
+    .text-element.button {
         text-transform: uppercase;
         padding-top: 10px;
         color: white;
@@ -36,7 +36,7 @@
         letter-spacing: -1px;
         text-align: center;
     }
-    .button:hover {
+    .text-element.button:hover {
         background-color: #004a7a;
     }
     .list {
